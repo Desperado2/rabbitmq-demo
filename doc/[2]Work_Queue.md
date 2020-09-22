@@ -104,22 +104,21 @@ public class QueueConsumer {
 将消费者的代码在拷贝一份，这样我们就有了两个消费者。
 
 
-
 ### 运行
 
 首先我们先分表启动两个消费者，然后在启动生产者，去看看两个消费者消费的消息情况。
 
 生产者运行结果:
 
-![img](E:\code\rabbitmq-test\doc\image\work_queue\1_queue_producer_run_result.jpg)
+![img](work_queue/1_queue_producer_run_result.jpg)
 
 消费者1运行结果
 
-![img](E:\code\rabbitmq-test\doc\image\work_queue\2_queue_consumer_run_result.jpg)
+![img](work_queue/2_queue_consumer_run_result.jpg)
 
 消费者2运行结果
 
-![img](E:\code\rabbitmq-test\doc\image\work_queue\2_queue_consumer1_run_result.jpg)
+![img](work_queue/2_queue_consumer1_run_result.jpg)
 
 ### 循环分发
 
