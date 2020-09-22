@@ -10,3 +10,4 @@ RabbitMQ可在许多操作系统和云环境上运行，并为大多数流行语
 1. [Hello World入门](https://github.com/Desperado2/rabbitmq-demo/blob/master/doc/%5B1%5DHello_World.md)
 2. [工作队列](https://github.com/Desperado2/rabbitmq-demo/blob/master/doc/%5B2%5DWork_Queue.md)
 3. [消息确认](https://github.com/Desperado2/rabbitmq-demo/blob/master/doc/%5B3%5DAuto_Ack_And_Manual_Ack.md)
+4. [公平分发](https://github.com/Desperado2/rabbitmq-demo/blob/master/doc/%5B4%5DFair_Dispatch.md)

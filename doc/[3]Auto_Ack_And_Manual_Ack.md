@@ -314,3 +314,18 @@ rabbitmq结果:
 
 我们发现，消息生产者发送了7条消息，消费者1消费到了消息0,2,4,6。消费者2消息了消息1,3,5，而且是循环轮流分发到的，这种分发的方式就是循环分发。分发到之后，消费者1消费到了sleep消息，程序进行了阻塞，这时候我们可以看到rabbitmq里面还是有4条消息，即0,2,4,6这四条消息没有得到确认，然后杀掉消费者1，我们发现消费者2消费到了这4条消息，然后rabbitmq删除了所有成功消费的消息，这样就确保了消息不会丢失。
 
+## 被遗忘的确认
+
+错过basicAck是一个常见的错误。这是一个简单的错误，但是后果很严重。当您的客户端退出时，消息将被重新发送（看起来像是随机重新发送），但是RabbitMQ将消耗越来越多的内存，因为它将无法释放任何未确认的消息。
+
+为了调试这种错误，您可以使用rabbitmqctl 打印messages_unacknowledged字段：
+
+```bash
+sudo rabbitmqctl list_queues名称messages_ready messages_unacknowledged
+```
+
+在windows上，删除sudo：
+
+```bash
+rabbitmqctl.bat list_queues名称messages_ready messages_unacknowledged
+```
