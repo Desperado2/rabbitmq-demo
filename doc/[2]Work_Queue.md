@@ -110,15 +110,15 @@ public class QueueConsumer {
 
 生产者运行结果:
 
-![img](image/work_queue/1_queue_producer_run_result.jpg)
+![img](work_queue/1_queue_producer_run_result.jpg)
 
 消费者1运行结果
 
-![img](image/work_queue/2_queue_consumer_run_result.jpg)
+![img](work_queue/2_queue_consumer_run_result.jpg)
 
 消费者2运行结果
 
-![img](image/work_queue/2_queue_consumer1_run_result.jpg)
+![img](work_queue/2_queue_consumer1_run_result.jpg)
 
 ### 循环分发
 
