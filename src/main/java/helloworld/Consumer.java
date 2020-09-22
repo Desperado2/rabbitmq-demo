@@ -32,15 +32,29 @@ public class Consumer {
         Channel channel = connection.createChannel();
 
         // 4. 声明创建一个队列
-        String queueName = "test";
+        String queueName = "helloRabbitMQ";
 
-        // 4.1. 创建队列，参数：{队列名称，是否持久化，是否独占，是否自动删除，参数}
+        // 4.1. 创建队列
+        /*
+         * queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments)
+         * queue 队列名
+         * durable 该队列是否需要持久化
+         * exclusive 该队列是否为该通道独占的（其他通道是否可以消费该队列）
+         * autoDelete 该队列不再使用的时候，是否让RabbitMQ服务器自动删除掉
+         * arguments 其他参数
+         */
         channel.queueDeclare(queueName,true,false,false,null);
 
         // 5. 创建一个消费者
         QueueingConsumer queueingConsumer = new QueueingConsumer(channel);
 
-        // 6. 设置channel,参数{队列名称，是否自动ack，消费者}
+        // 6. 设置channel
+        /*
+         * String basicConsume(String queue, boolean autoAck, Consumer callback )
+         * queue  队列名字，即要从哪个队列中接收消息
+         * autoAck 是否自动确认，默认true
+         * callback 消费者，即谁接收消息
+         */
         channel.basicConsume(queueName,true,queueingConsumer);
 
         // 7. 获取消息
