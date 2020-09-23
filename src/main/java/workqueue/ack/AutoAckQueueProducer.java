@@ -42,8 +42,7 @@ public class AutoAckQueueProducer {
         channel.queueDeclare(queueName,false,false,false,null);
 
         // 6. 发送消息
-        for (int i = 0; i < msgs.length; i++) {
-            String msg = msgs[i];
+        for (String msg : msgs) {
             /*
              *  basicPublish(String exchange, String routingKey, BasicProperties props, byte[] body)
              *  exchange 指定交换机 不指定则默认(AMQP default交换机)
@@ -51,8 +50,13 @@ public class AutoAckQueueProducer {
              *  props 消息属性
              *  body 消息体
              */
-            channel.basicPublish("",queueName,null,msg.getBytes());
-            System.out.println("消息:" + msg +"发送完毕");
+            channel.basicPublish("", queueName, null, msg.getBytes());
+            System.out.println("消息:" + msg + "发送完毕");
         }
+
+
+        // 7. 关闭channel和连接
+        channel.close();
+        connection.close();
     }
 }

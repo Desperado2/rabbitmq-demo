@@ -50,5 +50,9 @@ public class FanoutProdurce {
         channel.basicPublish(exchangeName,"",null, msg.getBytes());
         System.out.println("消息发送成功:" + msg);
 
+
+        // 7. 关闭channel和连接
+        channel.close();
+        connection.close();
     }
 }

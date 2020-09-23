@@ -59,5 +59,9 @@ public class DirectProducer {
         msg = "this is a error info";
         channel.basicPublish(exchangeName,"error",null, msg.getBytes());
         System.out.println("error消息发送成功: "+ msg);
+
+        // 7. 关闭channel和连接
+        channel.close();
+        connection.close();
     }
 }

@@ -36,6 +36,10 @@ public class QueueProducer {
             channel.basicPublish("",queueName,null,msg.getBytes());
             System.out.println("消息:" + msg +"发送完毕");
         }
+        
+        // 7. 关闭channel和连接
+        channel.close();
+        connection.close();
     }
 }
 ```

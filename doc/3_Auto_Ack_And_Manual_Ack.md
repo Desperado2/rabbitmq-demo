@@ -52,12 +52,15 @@ public class AutoAckQueueProducer {
          */
         channel.queueDeclare(queueName,false,false,false,null);
 
-        // 6. 发送消息
-        for (int i = 0; i < msgs.length; i++) {
-            String msg = msgs[i];
-            channel.basicPublish("",queueName,null,msg.getBytes());
-            System.out.println("消息:" + msg +"发送完毕");
-        }
+         // 6. 发送消息
+         for (String msg : msgs) {
+             channel.basicPublish("",queueName,null,msg.getBytes());
+             System.out.println("消息:" + msg +"发送完毕");
+         }
+        
+         // 7. 关闭channel和连接
+         channel.close();
+         connection.close();
     }
 }
 ```
@@ -208,11 +211,14 @@ public class ManualAckQueueProducer {
         channel.queueDeclare(queueName,false,false,false,null);
 
         // 6. 发送消息
-        for (int i = 0; i < msgs.length; i++) {
-            String msg = msgs[i];
+        for (String msg : msgs) {
             channel.basicPublish("",queueName,null,msg.getBytes());
             System.out.println("消息:" + msg +"发送完毕");
         }
+
+        // 7. 关闭channel和连接
+        channel.close();
+        connection.close();
     }
 }
 ```

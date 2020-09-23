@@ -73,11 +73,14 @@ public class DurabilityProducer {
         channel.queueDeclare(queueName,true,false,false,null);
 
         // 6. 发送消息
-        for (int i = 0; i < msgs.length; i++) {
-            String msg = msgs[i];
+        for (String msg : msgs) {
             channel.basicPublish("",queueName, MessageProperties.PERSISTENT_TEXT_PLAIN,msg.getBytes());
             System.out.println("消息:" + msg +"发送完毕");
         }
+
+        // 7. 关闭channel和连接
+        channel.close();
+        connection.close();
     }
 }
 
