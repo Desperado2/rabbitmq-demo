@@ -255,3 +255,7 @@ java Producer
 ```
 
 消费者会接收到发布者通过RabbitMQ发送的消息，并将其打印出来。消费者会一直保持运行状态来等待接受消息（可以使用Ctrl-C 来将其停止），接下来我们可以试着在另一个终端里运行发布者代码来尝试发送消息了。
+
+
+### 代码所在目录
+[src/main/java/helloworld](../src/main/java/helloworld)

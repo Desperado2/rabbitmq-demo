@@ -44,6 +44,13 @@ public class DispatchProducer {
         // 6. 发送消息
         for (int i = 0; i < msgs.length; i++) {
             String msg = msgs[i];
+            /*
+             *  basicPublish(String exchange, String routingKey, BasicProperties props, byte[] body)
+             *  exchange 指定交换机 不指定则默认(AMQP default交换机)
+             *  routingKey 路由键，即发布消息时，该消息的路由键是什么
+             *  props 消息属性
+             *  body 消息体
+             */
             channel.basicPublish("",queueName,null,msg.getBytes());
             System.out.println("消息:" + msg +"发送完毕");
         }

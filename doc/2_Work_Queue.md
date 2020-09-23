@@ -123,3 +123,6 @@ public class QueueConsumer {
 ### 循环分发
 
 我们发现，消息生产者发送了6条消息，消费者1和2分别分到了3个消息，而且是循环轮流分发到的，这种分发的方式就是循环分发。
+
+### 代码所在目录
+[src/main/java/workqueue](../src/main/java/workqueue)

@@ -1,38 +1,31 @@
-## 消息持久化
+## 公平分发
 
-我们已经学会了如何确保即使消费者死亡，任务也不会丢失。但是，如果RabbitMQ服务器停止，我们的任务仍然会丢失。
+您可能已经注意到，调度现在是多个消费者轮流来消费消息。例如，在有两名工人的情况下，当所有奇怪的消息都很重，甚至消息很轻时，一位工人将一直忙碌而另一位工人将几乎不做任何工作。好吧，RabbitMQ对此一无所知，并且仍将平均分配消息。
 
-RabbitMQ退出或崩溃时，它将忘记队列和消息，除非您告知不要这样做。确保消息不会丢失，需要做两件事：我们需要将队列和消息都标记为持久。
+发生这种情况是因为RabbitMQ在消息进入队列时才调度消息。它不会查看消费者的未确认消息数。它只是盲目地将每个第n条消息发送给第n个使用者。
 
-首先，我们需要确保该队列将在RabbitMQ节点重启后继续存在。为此，我们需要将其声明为**持久的**：
+![img](https://www.rabbitmq.com/img/tutorials/prefetch-count.png)
 
-```java
-boolean durable = true;
-channel.queueDeclare("task_queue", durable, false, false, null);
-```
+### 解决
 
-尽管此命令本身是正确的，但在我们当前的设置中将无法使用。那是因为我们已经定义了一个叫hello的队列 ，它并不持久。**RabbitMQ不允许您使用不同的参数重新定义现有队列，并且将向尝试执行此操作的任何程序返回错误**。但是有一个快速的解决方法-让我们声明一个名称不同的队列，例如task_queue1：
+为了解决这个问题，我们可以将basicQos方法与 prefetchCount = 1设置一起使用。这告诉RabbitMQ一次不要给工人一个以上的消息。换句话说，在处理并确认上一条消息之前，不要将新消息发送给工作人员。而是将其分派给尚不繁忙的下一个工作人员。
 
 ```java
-boolean durable = true;
-channel.queueDeclare("task_queue", durable, false, false, null);
+int prefetchCount = 1 ;
+channel.basicQos（prefetchCount）;
 ```
 
 
 
-此queueDeclare更改需要同时应用于生产者代码和消费者代码。
+#### 关于队列大小的注意事项
 
-在这一点上，我们确定即使RabbitMQ重新启动，task_queue队列也不会丢失。现在我们需要将消息标记为持久性-通过将MessageProperties（实现BasicProperties）设置为值PERSISTENT_TEXT_PLAIN。
+如果所有工作人员都忙，则您的队列将满。您将需要关注这一点，并可能会增加更多的工作人员，或者有其他一些策略。
 
-```java
-channel.basicPublish("", "task_queue",
-            MessageProperties.PERSISTENT_TEXT_PLAIN,
-            message.getBytes());
-```
 
-#### 有关消息持久性的说明
 
-将消息标记为持久性并不能完全保证不会丢失消息。尽管它告诉RabbitMQ将消息保存到磁盘，但是RabbitMQ接受消息但尚未将其保存时，仍有很短的时间。而且，RabbitMQ不会对每条消息都执行fsync（2）－它可能只是保存到缓存中，而没有真正写入磁盘。持久性保证并不强，但是对于我们的简单任务队列而言，这已经绰绰有余了。如果需要更强有力的保证，则可以使用 [发布者确认](https://www.rabbitmq.com/confirms.html)。
+#### 注意
+
+要想prefetchCount生效，必须使用手动确认，不能使用自动确认。因为如果自动确认，rabbitmq是无法确定消费者是否繁忙的，所有也无法指定消费者去消费消息。
 
 
 
@@ -41,11 +34,11 @@ channel.basicPublish("", "task_queue",
 生产者代码如下:
 
 ```java
-public class DurabilityProducer {
+public class DispatchProducer {
 
     public static void main(String[] args) throws IOException, TimeoutException {
         // 1. 定义队列名称
-        String queueName = "task_queue1";
+        String queueName = "task_queue";
         String[] msgs = {"sleep", "task 1", "task 2", "task 3", "task 4", "task 5", "task 6"};
 
         // 2. 创建连接工厂
@@ -70,27 +63,26 @@ public class DurabilityProducer {
          * autoDelete 该队列不再使用的时候，是否让RabbitMQ服务器自动删除掉
          * arguments 其他参数
          */
-        channel.queueDeclare(queueName,true,false,false,null);
+        channel.queueDeclare(queueName,false,false,false,null);
 
         // 6. 发送消息
         for (int i = 0; i < msgs.length; i++) {
             String msg = msgs[i];
-            channel.basicPublish("",queueName, MessageProperties.PERSISTENT_TEXT_PLAIN,msg.getBytes());
+            channel.basicPublish("",queueName,null,msg.getBytes());
             System.out.println("消息:" + msg +"发送完毕");
         }
     }
 }
-
 ```
 
-消费者代码如下:
+消费者代码如下：
 
 ```java
-public class DurabilityQueueConsumer {
+public class FairDispatchQueueConsumer {
 
     public static void main(String[] args) throws IOException, TimeoutException {
         // 1. 定义队列名称
-        String queueName = "task_queue1";
+        String queueName = "task_queue";
 
         // 2. 创建连接工厂
         ConnectionFactory connectionFactory = new ConnectionFactory();
@@ -114,7 +106,7 @@ public class DurabilityQueueConsumer {
          * autoDelete 该队列不再使用的时候，是否让RabbitMQ服务器自动删除掉
          * arguments 其他参数
          */
-        channel.queueDeclare(queueName,true,false,false,null);
+        channel.queueDeclare(queueName,false,false,false,null);
 
         // 6. 创建消费者
         Consumer consumer = new DefaultConsumer(channel) {
@@ -159,6 +151,24 @@ public class DurabilityQueueConsumer {
         }
     }
 }
-
 ```
 
+### 运行结果
+
+生产者运行结果
+
+![img](image/dispatch/1_fair_dispatch_producer_result.jpg)
+
+消费者1运行结果
+
+![img](image/dispatch/2_fire_dispatch_consumer_result.jpg)
+
+消费者2运行结果
+
+![img](image/dispatch/3_fire_dispatch_consumer1_result.jpg)
+
+可以发现，rabbitmq将消息1发送到消费者1之后，消费者1进行了阻塞，然后将所有剩余的消息全都发送给了消费者2。
+
+
+### 代码所在目录
+[src/main/java/workqueue/dispatch](../src/main/java/workqueue/dispatch)

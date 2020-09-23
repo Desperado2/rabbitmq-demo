@@ -7,8 +7,9 @@ RabbitMQ轻巧，易于在内部和云中部署。它支持多种消息传递协
 RabbitMQ可在许多操作系统和云环境上运行，并为大多数流行语言提供了广泛的开发人员工具。
 
 ### 文档
-1. [Hello World入门](https://github.com/Desperado2/rabbitmq-demo/blob/master/doc/%5B1%5DHello_World.md)
-2. [工作队列](https://github.com/Desperado2/rabbitmq-demo/blob/master/doc/%5B2%5DWork_Queue.md)
-3. [消息确认](https://github.com/Desperado2/rabbitmq-demo/blob/master/doc/%5B3%5DAuto_Ack_And_Manual_Ack.md)
-4. [公平分发](https://github.com/Desperado2/rabbitmq-demo/blob/master/doc/%5B4%5DFair_Dispatch.md)
-4. [消息持久化](https://github.com/Desperado2/rabbitmq-demo/blob/master/doc/%5B5%5DMessage_Durability.md)
+1. [Hello World入门](doc/1_Hello_World.md)
+2. [工作队列](doc/2_Work_Queue.md)
+3. [消息确认](doc/3_Auto_Ack_And_Manual_Ack.md)
+4. [公平分发](doc/4_Fair_Dispatch.md)
+5. [消息持久化](doc/5_Message_Durability.md)
+6. [发布/订阅](doc/6_DPublish_Subscribe_Fanout.md)
