@@ -7,6 +7,7 @@ RabbitMQ轻巧，易于在内部和云中部署。它支持多种消息传递协
 RabbitMQ可在许多操作系统和云环境上运行，并为大多数流行语言提供了广泛的开发人员工具。
 
 ### 文档
+0. [安装rabbitmq](doc/0_install_rabbitmq.md)
 1. [Hello World入门](doc/1_Hello_World.md)
 2. [工作队列](doc/2_Work_Queue.md)
 3. [消息确认](doc/3_Auto_Ack_And_Manual_Ack.md)
