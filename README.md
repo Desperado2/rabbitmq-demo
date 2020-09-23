@@ -12,4 +12,4 @@ RabbitMQ可在许多操作系统和云环境上运行，并为大多数流行语
 3. [消息确认](doc/3_Auto_Ack_And_Manual_Ack.md)
 4. [公平分发](doc/4_Fair_Dispatch.md)
 5. [消息持久化](doc/5_Message_Durability.md)
-6. [发布/订阅](doc/6_DPublish_Subscribe_Fanout.md)
+6. [发布/订阅](doc/6_Publish_Subscribe_Fanout.md)
