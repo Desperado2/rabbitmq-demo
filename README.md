@@ -14,3 +14,4 @@ RabbitMQ可在许多操作系统和云环境上运行，并为大多数流行语
 5. [消息持久化](doc/5_Message_Durability.md)
 6. [发布/订阅](doc/6_Publish_Subscribe_Fanout.md)
 7. [路由](doc/7_Routing.md)
+7. [主题路由器](doc/8_Topics.md)
