@@ -301,3 +301,7 @@ public class DirectConsumer1 {
 消费者2结果:
 
 ![img](image/direct/3_direct_consumer1_result.jpg)
+
+
+### 代码所在目录
+[src/main/java/publishsubscribe/direct](../src/main/java/publishsubscribe/direct)
