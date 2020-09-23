@@ -30,6 +30,14 @@ public class QueueConsumer {
         Channel channel = connection.createChannel();
 
         // 5. channel绑定queue
+        /*
+         * queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments)
+         * queue 队列名
+         * durable 该队列是否需要持久化
+         * exclusive 该队列是否为该通道独占的（其他通道是否可以消费该队列）
+         * autoDelete 该队列不再使用的时候，是否让RabbitMQ服务器自动删除掉
+         * arguments 其他参数
+         */
         channel.queueDeclare(queueName,false,false,false,null);
 
         // 6. 创建消费者
