@@ -37,7 +37,7 @@ RabbitMQ和邮局主要区别在于，RabbitMQ不处理纸质信件，取而代�
 <dependency>
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
-            <version>3.6.5</version>
+            <version>5.6.0</version>
 </dependency>
 ```
 
@@ -174,29 +174,25 @@ channel.queueDeclare(queueName,true,false,false,null);
 创建一个消费者
 
 ```java
-QueueingConsumer queueingConsumer = new QueueingConsumer(channel);
+Consumer queueingConsumer = new DefaultConsumer(channel){
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                String msg = new String(body);
+                System.out.println("消费到了消息:"+msg);
+            }
+        };
 ```
 
-设置channel
+设置channel,消费消息
 
 ```
  channel.basicConsume(queueName,true,queueingConsumer);
 ```
 
-消费消息
-
-```java
-while (true){
-            QueueingConsumer.Delivery delivery = queueingConsumer.nextDelivery();
-            String msg = new String(delivery.getBody());
-            System.out.println("消费到消息:" + msg);
-        }
-```
-
 完整代码如下
 
 ```java
-public class Consumer {
+public class HelloConsumer {
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
 
@@ -220,18 +216,16 @@ public class Consumer {
         channel.queueDeclare(queueName,true,false,false,null);
 
         // 5. 创建一个消费者
-        QueueingConsumer queueingConsumer = new QueueingConsumer(channel);
+        Consumer queueingConsumer = new DefaultConsumer(channel){
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                String msg = new String(body);
+                System.out.println("消费到了消息:"+msg);
+            }
+         };
 
         // 6. 设置channel,参数{队列名称，是否自动ack，消费者}
         channel.basicConsume(queueName,true,queueingConsumer);
-
-        // 7. 获取消息
-        while (true){
-            QueueingConsumer.Delivery delivery = queueingConsumer.nextDelivery();
-            String msg = new String(delivery.getBody());
-            System.out.println("消费到消息:" + msg);
-        }
-
     }
 }
 ```
